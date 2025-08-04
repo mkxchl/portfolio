@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from "react";
 import { useGLTF, useAnimations } from "@react-three/drei";
 import { useMotionValue, useSpring } from "motion/react";
@@ -9,32 +10,20 @@ export function Astronaut(props) {
     "/models/tenhun_falling_spaceman_fanart.glb"
   );
   const { actions } = useAnimations(animations, group);
-
-  // Play specific animation: "Idle"
   useEffect(() => {
-    const idleAnim = actions["Idle"];
-    if (idleAnim) {
-      idleAnim.reset().fadeIn(0.5).play();
-    } else {
-      console.warn("Idle animation not found.");
-      console.log("Available animations:", animations.map((a) => a.name));
+    if (animations.length > 0) {
+      actions[animations[0].name]?.play();
     }
   }, [actions, animations]);
 
-  // Floating motion
   const yPosition = useMotionValue(5);
   const ySpring = useSpring(yPosition, { damping: 30 });
-
   useEffect(() => {
     ySpring.set(-1);
   }, [ySpring]);
-
   useFrame(() => {
-    if (group.current) {
-      group.current.position.y = ySpring.get();
-    }
+    group.current.position.y = ySpring.get();
   });
-
   return (
     <group
       ref={group}
